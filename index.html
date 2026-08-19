@@ -1,0 +1,62 @@
+import requests
+import time
+
+def make_time_stamp():
+    return int(time.time() * 1000)
+
+youtube_v = "_-2dIuV34cs"
+file = "mp4"
+
+headers = {
+    "Origin": "https://ytmp3.gl",
+    "Referer": "https://ytmp3.gl/",
+    "Prefer": "safe",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151 Safari/537.36"
+}
+
+# auth 요청
+auth = requests.get("https://gamma.gammacloud.net/api/v1/auth", params = {"_": make_time_stamp()}, headers = headers)
+auth_data = auth.json()
+key = auth_data["key"]
+
+# init 요청
+init_headers = headers.copy()
+init_headers["Authorization"] = f"Bearer {key}"
+init = requests.get("https://gamma.gammacloud.net/api/v1/init", params = {"_": make_time_stamp()}, headers = init_headers)
+init_data = init.json()
+convertURL = init_data["convertURL"]
+
+# convert 요청
+convert = requests.get(convertURL, params = {"v": youtube_v, "f": file, "_": make_time_stamp()}, headers = headers)
+convert_data = convert.json()
+
+downloadURL, progressURL = convert_data["downloadURL"], convert_data["progressURL"]
+
+# 변환이 완료 될 때 까지 기다리기
+pr = True
+complate = False
+
+while True:
+    time.sleep(1)
+    progress = requests.get(progressURL, params = {"_": make_time_stamp()}, headers = headers)
+    progress_data = progress.json()
+    if progress_data["progress"] == 3:
+        print("변환 완료")
+        complate = True
+        break
+    if progress_data["error"] != 0:
+        print(f"Error: {progress_data['error']}")
+        break
+    if progress_data["title"] != "" and pr:
+        title = progress_data["title"]
+        print(f"Title: {title}")
+        pr = False
+
+# 다운로드
+print("다운로드를 시작합니다")
+download = requests.get(downloadURL, headers = headers)
+
+with open(f"{title}.mp4", "wb") as f:
+    f.write(download.content)
+
+print("다운로드 완료") 
