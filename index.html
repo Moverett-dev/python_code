@@ -1,62 +1,411 @@
-import requests
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Python Code</title>
+
+    <!-- Prism.js -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css"
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 40px 20px;
+
+            background:
+                radial-gradient(circle at top, #20263a 0%, #11131a 45%, #090a0e 100%);
+
+            color: #fff;
+
+            font-family:
+                "Pretendard",
+                "Segoe UI",
+                sans-serif;
+        }
+
+        .container {
+            width: min(1050px, 100%);
+            margin: 0 auto;
+        }
+
+        .title {
+            margin-bottom: 18px;
+        }
+
+        .title h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .title p {
+            margin: 7px 0 0;
+            color: #959bab;
+            font-size: 14px;
+        }
+
+        .code-window {
+            overflow: hidden;
+
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 15px;
+
+            background: #16181d;
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.45),
+                inset 0 1px rgba(255, 255, 255, 0.03);
+        }
+
+        /* 상단바 */
+
+        .window-header {
+            height: 52px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 16px;
+
+            background: #1c1f26;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .window-buttons {
+            display: flex;
+            gap: 7px;
+        }
+
+        .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+        }
+
+        .red {
+            background: #ff5f57;
+        }
+
+        .yellow {
+            background: #febc2e;
+        }
+
+        .green {
+            background: #28c840;
+        }
+
+        .file-name {
+            color: #c8ccd4;
+            font-size: 13px;
+            font-family: Consolas, monospace;
+        }
+
+        /* 복사버튼 */
+
+        .copy-button {
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 8px;
+
+            padding: 7px 12px;
+
+            background: rgba(255, 255, 255, 0.05);
+
+            color: #cdd1d9;
+            font-size: 12px;
+
+            cursor: pointer;
+
+            transition: 0.18s;
+        }
+
+        .copy-button:hover {
+            background: rgba(255, 255, 255, 0.11);
+            color: white;
+        }
+
+        .copy-button.copied {
+            background: rgba(46, 204, 113, 0.13);
+            border-color: rgba(46, 204, 113, 0.35);
+            color: #73e6a0;
+        }
+
+        /* 코드 */
+
+        pre[class*="language-"] {
+            margin: 0 !important;
+
+            padding-top: 24px !important;
+            padding-bottom: 24px !important;
+
+            background: #14161b !important;
+
+            font-family:
+                "JetBrains Mono",
+                "Cascadia Code",
+                Consolas,
+                monospace !important;
+
+            font-size: 14px;
+            line-height: 1.7;
+
+            tab-size: 4;
+        }
+
+        code[class*="language-"] {
+            font-family:
+                "JetBrains Mono",
+                "Cascadia Code",
+                Consolas,
+                monospace !important;
+        }
+
+        /* 줄번호 */
+
+        .line-numbers .line-numbers-rows {
+            border-right: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .line-numbers-rows > span::before {
+            color: #535968 !important;
+        }
+
+        /* 스크롤바 */
+
+        pre::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        pre::-webkit-scrollbar-track {
+            background: #14161b;
+        }
+
+        pre::-webkit-scrollbar-thumb {
+            background: #343943;
+            border-radius: 10px;
+        }
+
+        pre::-webkit-scrollbar-thumb:hover {
+            background: #454b57;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 18px 10px;
+            }
+
+            .title h1 {
+                font-size: 22px;
+            }
+
+            pre[class*="language-"] {
+                font-size: 12px;
+            }
+
+            .file-name {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="title">
+        <h1>Python Code</h1>
+        <p>ytmp3.gl API 테스트 코드</p>
+    </div>
+
+    <div class="code-window">
+
+        <div class="window-header">
+
+            <div class="header-left">
+
+                <div class="window-buttons">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+
+                <div class="file-name">
+                    downloader.py
+                </div>
+
+            </div>
+
+            <button
+                class="copy-button"
+                id="copyButton"
+                onclick="copyCode()"
+            >
+                복사
+            </button>
+
+        </div>
+
+<pre class="line-numbers"><code
+    id="pythonCode"
+    class="language-python"
+>import requests
 import time
 
 def make_time_stamp():
-    return int(time.time() * 1000)
+    return int(time.time() * 1000)
 
 youtube_v = "_-2dIuV34cs"
 file = "mp4"
 
 headers = {
-    "Origin": "https://ytmp3.gl",
-    "Referer": "https://ytmp3.gl/",
-    "Prefer": "safe",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151 Safari/537.36"
+    "Origin": "https://ytmp3.gl",
+    "Referer": "https://ytmp3.gl/",
+    "Prefer": "safe",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151 Safari/537.36"
 }
 
 # auth 요청
-auth = requests.get("https://gamma.gammacloud.net/api/v1/auth", params = {"_": make_time_stamp()}, headers = headers)
+auth = requests.get(
+    "https://gamma.gammacloud.net/api/v1/auth",
+    params={"_": make_time_stamp()},
+    headers=headers
+)
+
 auth_data = auth.json()
 key = auth_data["key"]
 
 # init 요청
 init_headers = headers.copy()
 init_headers["Authorization"] = f"Bearer {key}"
-init = requests.get("https://gamma.gammacloud.net/api/v1/init", params = {"_": make_time_stamp()}, headers = init_headers)
+
+init = requests.get(
+    "https://gamma.gammacloud.net/api/v1/init",
+    params={"_": make_time_stamp()},
+    headers=init_headers
+)
+
 init_data = init.json()
 convertURL = init_data["convertURL"]
 
 # convert 요청
-convert = requests.get(convertURL, params = {"v": youtube_v, "f": file, "_": make_time_stamp()}, headers = headers)
+convert = requests.get(
+    convertURL,
+    params={
+        "v": youtube_v,
+        "f": file,
+        "_": make_time_stamp()
+    },
+    headers=headers
+)
+
 convert_data = convert.json()
 
-downloadURL, progressURL = convert_data["downloadURL"], convert_data["progressURL"]
+downloadURL = convert_data["downloadURL"]
+progressURL = convert_data["progressURL"]
 
 # 변환이 완료 될 때 까지 기다리기
 pr = True
 complate = False
 
 while True:
-    time.sleep(1)
-    progress = requests.get(progressURL, params = {"_": make_time_stamp()}, headers = headers)
-    progress_data = progress.json()
-    if progress_data["progress"] == 3:
-        print("변환 완료")
-        complate = True
-        break
-    if progress_data["error"] != 0:
-        print(f"Error: {progress_data['error']}")
-        break
-    if progress_data["title"] != "" and pr:
-        title = progress_data["title"]
-        print(f"Title: {title}")
-        pr = False
+    time.sleep(1)
+
+    progress = requests.get(
+        progressURL,
+        params={"_": make_time_stamp()},
+        headers=headers
+    )
+
+    progress_data = progress.json()
+
+    if progress_data["progress"] == 3:
+        print("변환 완료")
+        complate = True
+        break
+
+    if progress_data["error"] != 0:
+        print(f"Error: {progress_data['error']}")
+        break
+
+    if progress_data["title"] != "" and pr:
+        title = progress_data["title"]
+        print(f"Title: {title}")
+        pr = False
 
 # 다운로드
 print("다운로드를 시작합니다")
-download = requests.get(downloadURL, headers = headers)
+
+download = requests.get(
+    downloadURL,
+    headers=headers
+)
 
 with open(f"{title}.mp4", "wb") as f:
-    f.write(download.content)
+    f.write(download.content)
 
-print("다운로드 완료") 
+print("다운로드 완료")</code></pre>
+
+    </div>
+
+</div>
+
+
+<!-- Prism.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+
+<script>
+    async function copyCode() {
+        const code = document.getElementById("pythonCode").textContent;
+        const button = document.getElementById("copyButton");
+
+        try {
+            await navigator.clipboard.writeText(code);
+
+            button.textContent = "복사됨 ✓";
+            button.classList.add("copied");
+
+            setTimeout(() => {
+                button.textContent = "복사";
+                button.classList.remove("copied");
+            }, 1600);
+
+        } catch (error) {
+            button.textContent = "복사 실패";
+
+            setTimeout(() => {
+                button.textContent = "복사";
+            }, 1600);
+        }
+    }
+</script>
+
+</body>
+</html>
